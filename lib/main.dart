@@ -7,7 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show MethodChannel;
+import 'package:flutter/services.dart' show MethodChannel, SystemChrome, SystemUiOverlayStyle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -98,14 +98,27 @@ void main() async {
 }
 
 // Экран для авторизации трекинга
-class StarlightAuthView extends StatelessWidget {
+class StarlightAuthView extends StatefulWidget {
   const StarlightAuthView({super.key});
 
+  @override
+  State<StarlightAuthView> createState() => _StarlightAuthViewState();
+}
+
+class _StarlightAuthViewState extends State<StarlightAuthView> {
   Future<void> _markAuthViewed() async {
     final storage = await SharedPreferences.getInstance();
     await storage.setBool('auth_viewed', true);
   }
-
+@override
+  void initState() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.black, // Черный фон статус-бара
+    statusBarIconBrightness: Brightness.light, // Белые иконки в статус-баре (для Android)
+    statusBarBrightness: Brightness.dark, // Для iOS: темный фон, белые иконки
+  ));
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CosmicAuthBloc, NebulaTrackState>(
@@ -214,6 +227,11 @@ class _HorizonSetupViewState extends State<HorizonSetupView> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.black, // Черный фон статус-бара
+      statusBarIconBrightness: Brightness.light, // Белые иконки в статус-баре (для Android)
+      statusBarBrightness: Brightness.dark, // Для iOS: темный фон, белые иконки
+    ));
     _signalManager.listenForSignal((signal) {
       _transition(signal);
     });
@@ -246,9 +264,8 @@ class _HorizonSetupViewState extends State<HorizonSetupView> {
       backgroundColor: Colors.black,
       body: const Center(
         child: SizedBox(
-          height: 100,
-          width: 100,
-          child: Center(child: SizedBox()),
+
+          child: Center(child: _AnimatedDotsText()),
         ),
       ),
     );
@@ -377,7 +394,11 @@ class _GalaxyPortalViewState extends State<GalaxyPortalView> with WidgetsBinding
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.black, // Черный фон статус-бара
+      statusBarIconBrightness: Brightness.light, // Белые иконки в статус-баре (для Android)
+      statusBarBrightness: Brightness.dark, // Для iOS: темный фон, белые иконки
+    ));
     Future.delayed(const Duration(seconds: 9), () {
       setState(() {
         _displayPortal = true;
@@ -640,7 +661,7 @@ class _GalaxyPortalViewState extends State<GalaxyPortalView> with WidgetsBinding
                           dotRadius: 10.0, // Увеличен радиус для видимости
                           dotColor: Colors.amber, // Яркий желтый цвет для контраста
                           dotCount: 8,
-                          loadingDuration: const Duration(milliseconds: 7000),
+                          loadingDuration: const Duration(milliseconds: 8000),
                           child: const SizedBox.shrink(),
                         ),
                         _AnimatedDotsText(),

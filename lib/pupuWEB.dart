@@ -246,13 +246,18 @@ class _GalaxyStreamInterfaceState extends State<_GalaxyStreamInterface> with Wid
     MethodChannel('com.example.fcm/notification').setMethodCallHandler((call) async {
       if (call.method == "onNotificationTap") {
         final Map<String, dynamic> payload = Map<String, dynamic>.from(call.arguments);
-        final targetUrl = payload["uri"];
-        if (targetUrl != null && !targetUrl.contains("No URI")) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => GalaxyStreamPortal(targetUrl)),
-                (route) => false,
-          );
+        final url =payload["uri"];
+        // Проверяем, что "uri" реально есть в payload
+        if (url != null && !url.contains("Нет URI")) {
+          final targetUrl = payload["uri"];
+          // Можно добавить доп.проверку, что uri не пустой
+          if (targetUrl != null && targetUrl.toString().isNotEmpty) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => GalaxyStreamPortal(targetUrl)),
+                  (route) => false,
+            );
+          }
         }
       }
     });
